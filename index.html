@@ -48,12 +48,7 @@
             border-radius: 8px;
             font-size: 15px;
         }
-        /* Corrigir largura dos inputs na mesma linha */
-        .inline-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+        /* REMOVIDO: .inline-inputs para evitar a compressão. */
         .btn {
             background: #1a73e8;
             color: #fff;
@@ -68,16 +63,16 @@
         .btn:hover {
             background: #155ab6;
         }
-        /* CORREÇÃO DO LAYOUT DO RESULTADO */
+        /* MELHORIA DO LAYOUT DO RESULTADO */
         .resultado {
             margin-top: 25px;
-            padding: 20px; /* Mais padding para destaque */
+            padding: 20px; 
             background: #e8f0fe;
             border-left: 5px solid #1a73e8;
             border-radius: 8px;
-            font-size: 1.1em; /* Aumenta o tamanho do texto */
+            font-size: 1.1em; 
             line-height: 1.8;
-            white-space: pre-wrap; /* Permite quebras de linha no HTML */
+            white-space: pre-wrap; 
             font-weight: 500;
         }
         .aviso-negativo {
@@ -88,13 +83,16 @@
         #graficoRendimento {
             margin-top: 30px;
             max-width: 100%;
-            height: 300px; /* Adiciona uma altura mínima para aparecer */
+            height: 300px; 
+            display: block; /* Garante que ocupa a linha */
         }
         footer {
             margin-top: 50px;
             text-align: center;
             font-size: 14px;
             color: #777;
+            /* Garante que o rodapé fica visível no fundo */
+            padding-top: 20px; 
         }
     </style>
 </head>
@@ -103,30 +101,26 @@
         <h1>Simulador de Rendimento TVDE</h1>
         <h2>Calcula o teu lucro líquido com base nos teus dados reais</h2>
 
-        <div class="inline-inputs">
-            <div class="input-group">
-                <label for="horas">Horas trabalhadas</label>
-                <input type="number" id="horas" placeholder="Ex: 8" value="4">
-            </div>
+        <div class="input-group">
+            <label for="horas">Horas trabalhadas</label>
+            <input type="number" id="horas" placeholder="Ex: 8" value="4">
+        </div>
 
-            <div class="input-group">
-                <label for="km">Quilómetros percorridos</label>
-                <input type="number" id="km" placeholder="Ex: 165" value="150">
-            </div>
+        <div class="input-group">
+            <label for="km">Quilómetros percorridos</label>
+            <input type="number" id="km" placeholder="Ex: 165" value="150">
         </div>
         
-        <div class="inline-inputs">
-            <div class="input-group">
-                <label for="ganhos">Ganhos brutos (€)</label>
-                <input type="number" id="ganhos" placeholder="Ex: 150" value="106">
-            </div>
-
-            <div class="input-group">
-                <label for="custoKm">Custo estimado por km (€)</label>
-                <input type="number" id="custoKm" placeholder="Ex: 0.25" value="0.46">
-            </div>
+        <div class="input-group">
+            <label for="ganhos">Ganhos brutos (€)</label>
+            <input type="number" id="ganhos" placeholder="Ex: 150" value="106">
         </div>
 
+        <div class="input-group">
+            <label for="custoKm">Custo estimado por km (€)</label>
+            <input type="number" id="custoKm" placeholder="Ex: 0.25" value="0.46">
+        </div>
+        
         <button class="btn" onclick="calcularRendimento()">Calcular Rendimento</button>
         <button class="btn" onclick="exportarPDF()">📄 Exportar para PDF</button>
 
@@ -161,13 +155,10 @@
             const lucroHora = horas ? (lucroLiquido / horas).toFixed(2) : '—';
             const lucroKm = km ? (lucroLiquido / km).toFixed(2) : '—';
 
-            // Mensagem de aviso condicional
             let aviso = 'O lucro líquido é um indicador financeiro que mostra o que realmente ganhou após deduzir os seus custos.';
-            let lucroClass = '';
-
+            
             if (lucroLiquido <= 0) {
                 aviso = '<span class="aviso-negativo">⚠️ **ATENÇÃO:** O seu Lucro Líquido é negativo. Os seus custos absorveram o seu ganho bruto.</span>';
-                lucroClass = 'aviso-negativo';
             }
             
             document.getElementById('resultado').innerHTML = `
@@ -179,7 +170,6 @@
                 ${aviso}
             `;
 
-            // Configuração do Gráfico
             const ctx = document.getElementById('graficoRendimento').getContext('2d');
             const dados = {
                 labels: ['Lucro/h', 'Lucro/km'],
@@ -199,14 +189,14 @@
                 data: dados,
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Permite que o CSS controle a altura
+                    maintainAspectRatio: false, 
                     plugins: {
                         legend: { display: false },
                         title: { display: true, text: 'Rendimento por hora vs km' }
                     },
                     scales: {
                         y: {
-                            beginAtZero: false // Inicia o eixo Y onde os dados começam
+                            beginAtZero: false 
                         }
                     }
                 }
@@ -221,7 +211,6 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Lógica de exportação de PDF (Mantida como estava)
             const campos = [
                 { label: "Horas trabalhadas", value: document.getElementById('horas')?.value },
                 { label: "Km percorridos", value: document.getElementById('km')?.value },
@@ -240,7 +229,6 @@
                 y += 6;
             });
 
-            // Extrai o texto do resultado (limpando tags HTML)
             const resultadoElement = document.getElementById('resultado');
             const resultadoTexto = resultadoElement.innerText.trim();
             const linhas = doc.splitTextToSize(resultadoTexto, 170);
@@ -248,10 +236,8 @@
             doc.text("📊 Resultados:", 20, y + 6);
             doc.text(linhas, 20, y + 12);
             
-            // Adicionar Gráfico ao PDF
             const canvas = document.getElementById('graficoRendimento');
             if (canvas) {
-                 // Garantir que o gráfico é desenhado antes de exportar
                 calcularRendimento(); 
                 const imgData = canvas.toDataURL('image/png');
                 doc.addPage();
@@ -263,12 +249,7 @@
         }
 
         window.onload = () => {
-             // Define valores padrão para demonstrar o cálculo correto ao iniciar
-             document.getElementById('horas').value = 4;
-             document.getElementById('km').value = 150;
-             document.getElementById('ganhos').value = 106;
-             document.getElementById('custoKm').value = 0.46;
-             
+             // O cálculo inicial é feito ao carregar a página
              calcularRendimento();
         };
     </script>
