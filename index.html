@@ -13,10 +13,14 @@
             background: #f4f6f8;
             color: #333;
             padding: 20px;
+            /* Garante que o body ocupa toda a altura */
+            min-height: 100vh;
+            margin: 0;
         }
         .container {
-            max-width: 800px;
-            margin: auto;
+            /* Corrigido: Largura máxima e centralização garantida */
+            max-width: 600px; /* Reduzimos um pouco para parecer mais compacto no centro */
+            margin: 20px auto; /* Margem superior/inferior para separação */
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -32,6 +36,7 @@
             font-weight: normal;
             color: #555;
             margin-bottom: 30px;
+            font-size: 1.1em;
         }
         .input-group {
             margin-bottom: 15px;
@@ -47,8 +52,8 @@
             border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 15px;
+            box-sizing: border-box; /* Garante que o padding não aumenta a largura total */
         }
-        /* REMOVIDO: .inline-inputs para evitar a compressão. */
         .btn {
             background: #1a73e8;
             color: #fff;
@@ -63,7 +68,6 @@
         .btn:hover {
             background: #155ab6;
         }
-        /* MELHORIA DO LAYOUT DO RESULTADO */
         .resultado {
             margin-top: 25px;
             padding: 20px; 
@@ -79,20 +83,19 @@
             color: #d93025;
             font-weight: bold;
         }
-        /* CORREÇÃO DO LAYOUT DO GRÁFICO */
+        /* CORREÇÃO DO LAYOUT DO GRÁFICO (Removida a altura fixa do CSS) */
         #graficoRendimento {
             margin-top: 30px;
             max-width: 100%;
-            height: 300px; 
-            display: block; /* Garante que ocupa a linha */
+            display: block; 
+            /* A altura será controlada pelo Chart.js e pelo JS */
         }
         footer {
             margin-top: 50px;
             text-align: center;
             font-size: 14px;
             color: #777;
-            /* Garante que o rodapé fica visível no fundo */
-            padding-top: 20px; 
+            padding: 20px; 
         }
     </style>
 </head>
@@ -126,7 +129,9 @@
 
         <div class="resultado" id="resultado"></div>
         
-        <canvas id="graficoRendimento"></canvas>
+        <div style="width: 100%; height: 300px;">
+            <canvas id="graficoRendimento"></canvas>
+        </div>
     </div>
 
     <footer>
@@ -249,7 +254,6 @@
         }
 
         window.onload = () => {
-             // O cálculo inicial é feito ao carregar a página
              calcularRendimento();
         };
     </script>
